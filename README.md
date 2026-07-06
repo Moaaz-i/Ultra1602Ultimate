@@ -1,21 +1,27 @@
-## 🚀 Ultra1602Ultimate v1.0.0 - Initial Stable Release
+# Ultra1602Ultimate
 
-We are excited to introduce **Ultra1602Ultimate**, a lightweight and blazing-fast library for LCD 1602 displays designed to eliminate screen flickering and maximize refresh efficiency on AVR architecture.
+A lightweight, blazing-fast, and flicker-free LCD 1602 library for AVR architecture (e.g., Arduino Uno, Nano). It optimizes screen updates using a smart shadow buffer, rendering only changed characters to completely eliminate display flickering.
 
-### ✨ Key Features
+## ✨ Key Features
 
-- **Smart Refresh Buffer:** Eliminates the need for `lcd.clear()`, updating only modified characters to prevent annoying display flicker.
-- **Hybrid Connectivity:** Supports both high-speed Native 4-bit parallel mode and standard I2C mode.
-- **Precise Progress Bar:** Sub-character pixel control for ultra-smooth 0-100% rendering.
+- **Smart Refresh Buffer:** No more annoying screen flashes caused by `lcd.clear()`. It compares text updates and only overwrites modified characters.
+- **Hybrid Connectivity:** Supports high-speed **Native 4-bit parallel mode** and standard **I2C mode**.
+- **Smooth Progress Bar:** Pixel-perfect control over custom characters to draw an ultra-smooth 0-100% progress bar.
 - **Auto-Centering:** Built-in `printSmart` function automatically centers strings on any row.
-- **System Icons:** Native functions to draw dynamic Battery and Signal Strength icons out-of-the-box.
+- **Built-in System Icons:** Out-of-the-box support for drawing dynamic Battery and Signal Strength icons.
 
-### 📦 Installation
+---
 
-1. Download this repository as a `.zip` file.
-2. In the Arduino IDE, navigate to **Sketch > Include Library > Add .ZIP Library...**
-3. Choose the downloaded file.
+## 📂 Repository Structure
 
-### 📝 Example Usage
-
-Check the `examples/SmartProgressBar` folder for a complete test setup showing the dynamic counter alongside system icons.
+```text
+Ultra1602Ultimate/
+├── src/
+│   ├── Ultra1602Ultimate.h
+│   └── Ultra1602Ultimate.cpp
+├── examples/
+│   └── SmartProgressBar/
+│       └── SmartProgressBar.ino
+├── library.properties
+└── README.md
+```
