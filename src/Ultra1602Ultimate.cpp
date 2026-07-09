@@ -145,20 +145,23 @@ void Ultra1602Ultimate::stopBlinkingTextAsync() {
 }
 
 size_t Ultra1602Ultimate::write(uint8_t character) {
-  if (_curr_col >= _cols) {
-    _curr_col = 0;
-    _curr_row++;
-    if (_curr_row >= _rows)
-      _curr_row = 0;
-    setCursor(_curr_col, _curr_row);
-  }
+    if (_curr_col >= _cols) {
+        _curr_col = 0;
+        _curr_row++;
+        if (_curr_row >= _rows) _curr_row = 0;
+        setCursor(_curr_col, _curr_row);
+    }
 
-  if (_shadowBuffer[_curr_row][_curr_col] != character) {
-    _shadowBuffer[_curr_row][_curr_col] = character;
-    sendData(character);
-  }
-  _curr_col++;
-  return 1;
+    if (_shadowBuffer[_curr_row][_curr_col] != character) {
+        _shadowBuffer[_curr_row][_curr_col] = character;
+        sendData(character);
+    } else {
+        setCursor(_curr_col, _curr_row);
+        sendData(character);
+    }
+
+    _curr_col++;
+    return 1;
 }
 
 void Ultra1602Ultimate::clear() {
