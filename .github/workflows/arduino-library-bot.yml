@@ -1,0 +1,112 @@
+name: Arduino Library Autonomous Bot
+run-name: 🤖 Autonomous Bot - ${{ github.event_name }} by @${{ github.actor }}
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Welcome New Contributor
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🤖 Welcome @${context.actor}! Thank you for contributing to MicroTaskX. Running automated formatting and deep static analysis now...`
+            });
+
+      - name: Run Code Formatter
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-format cppcheck
+          find . -iname '*.h' -o -iname '*.cpp' -o -iname '*.ino' | xargs -r clang-format -i
+
+      - name: Run Static Code Analysis (Cppcheck)
+        id: cppcheck-run
+        run: |
+          echo "### 🔍 Static Analysis Report (Cppcheck)" > cppcheck_report.md
+          echo "\`\`\`text" >> cppcheck_report.md
+          cppcheck --enable=all --inconclusive --force . >> cppcheck_report.md 2>&1 || true
+          echo "\`\`\`" >> cppcheck_report.md
+          if grep -E "(error|warning|style|performance|portability):" cppcheck_report.md; then
+            echo "issues_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "issues_found=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for Formatting Changes
+        id: git-check
+        run: |
+          if ! git diff --exit-code; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit & Push Formatting Changes Directly
+        if: steps.git-check.outputs.changes == 'true' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "style: automated code formatting by autonomous bot"
+          git push
+
+      - name: Comment with Comprehensive Analysis Report
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          FORMATTING_CHANGES: ${{ steps.git-check.outputs.changes }}
+          ISSUES_FOUND: ${{ steps.cppcheck-run.outputs.issues_found }}
+          IS_FORK: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+        with:
+          script: |
+            const fs = require('fs');
+            const reportBody = fs.readFileSync('cppcheck_report.md', 'utf8');
+
+            const formattingApplied = process.env.FORMATTING_CHANGES === "true";
+            const issuesFound = process.env.ISSUES_FOUND === "true";
+            const isFork = process.env.IS_FORK === "true";
+
+            let statusEmoji = issuesFound ? "⚠️ Review Required" : "✅ Code Looks Clean";
+
+            let formattingStatus = "✨ Code is already perfectly formatted.";
+            if (formattingApplied) {
+              formattingStatus = isFork
+                ? "⚠️ Formatting issues detected. Please run `clang-format` locally (Auto-push disabled for external forks)."
+                : "⚡ Formatting rules applied and committed directly to your branch.";
+            }
+
+            const finalComment = `🤖 **Autonomous Bot Analysis Summary:**\n\n` +
+                                 `* **Formatting Status:** ${formattingStatus}\n` +
+                                 `* **Static Code Quality:** ${statusEmoji}\n\n` +
+                                 `<details>\n<summary>📝 Click here to view full static analysis details</summary>\n\n${reportBody}\n</details>\n\n` +
+                                 `🔒 *No automatic merge will be performed. Final approval rests with the repository maintainer.*`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: finalComment
+            });

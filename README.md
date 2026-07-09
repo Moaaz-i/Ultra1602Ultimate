@@ -5,10 +5,10 @@ A lightweight, blazing-fast, and flicker-free LCD 1602 library for AVR architect
 ## ✨ Key Features
 
 - **Smart Refresh Buffer:** No more annoying screen flashes caused by `lcd.clear()`. It compares text updates and only overwrites modified characters.
-- **Hybrid Connectivity:** Supports high-speed **Native 4-bit parallel mode** and standard **I2C mode**.
-- **Smooth Progress Bar:** Pixel-perfect control over custom characters to draw an ultra-smooth 0-100% progress bar.
-- **Auto-Centering:** Built-in `printSmart` function automatically centers strings on any row.
-- **Built-in System Icons:** Out-of-the-box support for drawing dynamic Battery and Signal Strength icons.
+- **Asynchronous Effects:** Run text marquees and blinking text smoothly in the background without using blocking `delay()` functions.
+- **Smooth Progress Bar:** Pixel-perfect control over custom characters to draw an ultra-smooth 0-100% precise progress bar.
+- **Advanced Text Layouts:** Built-in advanced text properties supporting Auto-Centering (Middle alignment), Right alignment, and Right-to-Left (RTL) rendering.
+- **Built-in System Icons:** Out-of-the-box support for drawing dynamic Battery, Wi-Fi signal bars, Heartbeat, and Custom matrix shapes based on string patterns.
 
 ---
 
@@ -20,8 +20,14 @@ Ultra1602Ultimate/
 │   ├── Ultra1602Ultimate.h
 │   └── Ultra1602Ultimate.cpp
 ├── examples/
-│   └── SmartProgressBar/
-│       └── SmartProgressBar.ino
+│   ├── Basic_HelloWorld/
+│   │   └── Basic_HelloWorld.ino
+│   ├── Async_Effects_Dashboard/
+│   │   └── Async_Effects_Dashboard.ino
+│   ├── System_Icons_And_Bars/
+│   │   └── System_Icons_And_Bars.ino
+│   └── Custom_Pattern_Shapes/
+│       └── Custom_Pattern_Shapes.ino
 ├── library.properties
 └── README.md
 ```
