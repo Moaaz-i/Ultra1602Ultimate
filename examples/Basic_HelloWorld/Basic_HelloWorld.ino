@@ -4,11 +4,11 @@ Ultra1602Ultimate lcd(8, 9, 4, 5, 6, 7, 10);
 
 void setup() {
   lcd.begin(16, 2);
-  lcd.printAdvanced("Hello, World!", 1, 0);
 
-  TextProps props;
-  props.align = 1;
-  lcd.printAdvanced("Ultra1602 Boot", 0, 1, props);
+  lcd.startBlinkingTextAsync("Hello, World!", 1, 0, 500, 0);
+  lcd.startBlinkingTextAsync("Ultra1602 Boot", 1, 1, 1000, 1);
 }
 
-void loop() {}
+void loop() {
+  lcd.updateAsync();
+}
