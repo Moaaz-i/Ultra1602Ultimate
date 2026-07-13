@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea or a new enhancement for MicroTaskX
+about: Suggest an idea or a new enhancement for Ultra1602Ultimate
 title: "[FEATURE] "
 labels: enhancement
 assignees: ""

@@ -35,7 +35,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `🤖 Welcome @${context.actor}! Thank you for contributing to MicroTaskX. Running automated formatting and deep static analysis now...`
+              body: `🤖 Welcome @${context.actor}! Thank you for contributing to Ultra1602Ultimate. Running automated formatting and deep static analysis now...`
             });
 
       - name: Run Code Formatter
