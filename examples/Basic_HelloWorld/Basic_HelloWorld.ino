@@ -9,6 +9,4 @@ void setup() {
   lcd.startBlinkingTextAsync("Ultra1602 Boot", 1, 1, 1000, 1);
 }
 
-void loop() {
-  lcd.updateAsync();
-}
+void loop() { lcd.updateAsync(); }
